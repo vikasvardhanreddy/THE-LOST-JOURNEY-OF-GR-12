@@ -1,0 +1,42 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="THE LOST JOURNEY OF GR"
+config/features=PackedStringArray("4.7", "Mobile")
+config/icon="res://assets/branding/android/launcher_main_192.png"
+config/version="1.0.0"
+boot_splash/image="res://assets/branding/splash_logo.png"
+boot_splash/bg_color=Color(0.14902, 0.0980392, 0.262745, 1)
+boot_splash/fullsize=false
+run/main_scene="res://scenes/ui/main_menu.tscn"
+
+[autoload]
+
+JourneyAudio="*res://scripts/systems/journey_audio.gd"
+JourneyProgress="*res://scripts/systems/journey_progress.gd"
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/handheld/orientation=0
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
+
+[rendering]
+
+rendering_device/driver.windows="d3d12"
+renderer/rendering_method="mobile"

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/chapter_05_truth.gd" id="1_chapter"]
+
+[node name="Chapter05Truth" type="Node2D"]
+script = ExtResource("1_chapter")

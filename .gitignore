@@ -1,0 +1,8 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+build/
+*.apk
+*.aab
+.quality_check_save.json*
+.chapter_selection_smoke_save.json*
