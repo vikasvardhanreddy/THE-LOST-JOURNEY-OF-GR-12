@@ -14,6 +14,7 @@ var _inventory_open := false
 var _root: Control
 var _dialogue_box: PanelContainer
 var _dialogue_label: Label
+var _dialogue_continue_button: Button
 var _clue_label: Label
 var _overlay: ColorRect
 var _health_label: Label
@@ -183,12 +184,17 @@ func _build_ui() -> void:
 	_dialogue_label.add_theme_color_override("font_color", Color("f4efdf"))
 	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	text_column.add_child(_dialogue_label)
-	var continue_hint := Label.new()
-	continue_hint.text = "E / ENTER     CONTINUE"
-	continue_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	continue_hint.add_theme_font_size_override("font_size", 13)
-	continue_hint.add_theme_color_override("font_color", Color("cbbb93", 0.85))
-	text_column.add_child(continue_hint)
+	_dialogue_continue_button = Button.new()
+	_dialogue_continue_button.name = "DialogueContinueButton"
+	_dialogue_continue_button.text = "TAP TO CONTINUE  ›"
+	_dialogue_continue_button.custom_minimum_size = Vector2(230, 42)
+	_dialogue_continue_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	_dialogue_continue_button.add_theme_font_size_override("font_size", 15)
+	_dialogue_continue_button.add_theme_color_override("font_color", Color("f3edda"))
+	_dialogue_continue_button.add_theme_stylebox_override("normal", _panel_style(Color("263c36", 0.92), Color("c3ad7c", 0.9), 12, 1))
+	_dialogue_continue_button.add_theme_stylebox_override("pressed", _panel_style(Color("405c4e", 0.98), Color("f0d38d"), 12, 2))
+	_dialogue_continue_button.pressed.connect(_advance_dialogue)
+	text_column.add_child(_dialogue_continue_button)
 	_overlay = ColorRect.new()
 	# Modal buttons must remain interactive while gameplay is paused.
 	_overlay.process_mode = Node.PROCESS_MODE_ALWAYS
@@ -633,6 +639,18 @@ func show_objective(text_value: String) -> void:
 func _show_current_line() -> void:
 	_dialogue_label.text = _lines[_line_index]
 
+func _advance_dialogue() -> void:
+	if not _dialogue_open:
+		return
+	_line_index += 1
+	if _line_index >= _lines.size():
+		_dialogue_open = false
+		_dialogue_box.visible = false
+		_update_touch_visibility()
+		dialogue_finished.emit()
+	else:
+		_show_current_line()
+
 func show_puzzle(title_text: String, hint_text: String, options: Array[String], correct_index: int) -> void:
 	_overlay.visible = true
 	_update_touch_visibility()
@@ -774,13 +792,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		_on_start_pressed()
 		get_viewport().set_input_as_handled()
 	elif _dialogue_open and (event.is_action_pressed("interact") or event.is_action_pressed("ui_accept")):
-		_line_index += 1
-		if _line_index >= _lines.size():
-			_dialogue_open = false
-			_dialogue_box.visible = false
-			dialogue_finished.emit()
-		else:
-			_show_current_line()
+		_advance_dialogue()
 		get_viewport().set_input_as_handled()
 	elif not _main_menu_open and not _dialogue_open and (event.keycode == KEY_ESCAPE or event.is_action_pressed("pause_game")):
 		if _pause_open:

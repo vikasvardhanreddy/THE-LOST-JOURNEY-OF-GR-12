@@ -22,6 +22,25 @@ func _run() -> void:
 		push_error("A required mobile touch target was not created")
 		quit(1)
 		return
+	var dialogue_lines: Array[String] = ["The opening clue awaits.", "Tap to continue, then explore."]
+	hud.show_dialogue(dialogue_lines)
+	var dialogue_continue := hud.find_child("DialogueContinueButton", true, false) as Button
+	if dialogue_continue == null or left.visible:
+		push_error("Dialogue did not provide a touch continuation or correctly hide gameplay controls")
+		quit(1)
+		return
+	dialogue_continue.pressed.emit()
+	await process_frame
+	if not hud._dialogue_open:
+		push_error("Dialogue touch continuation skipped more than one line")
+		quit(1)
+		return
+	dialogue_continue.pressed.emit()
+	await process_frame
+	if hud._dialogue_open or not left.visible or not right.visible or not jump.visible or not interact.visible or not run.visible or not attack.visible:
+		push_error("Touch controls did not appear after the opening dialogue closed")
+		quit(1)
+		return
 	var viewport_size := get_root().get_viewport().get_visible_rect().size
 	var window_size := Vector2(get_root().get_window().size)
 	var input_scale := window_size / viewport_size
