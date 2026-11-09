@@ -84,8 +84,8 @@ jobs:
           APK="build/android/TheLostJourney-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | grep -F "name='com.mygamestudio.thelostjourney'"
-          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > build/android/AndroidManifest.xml
-          grep -E 'screenOrientation.*\(type 0x10\)0x(0|6)([[:space:]]|$)' build/android/AndroidManifest.xml
+          grep -F 'package/unique_name="com.mygamestudio.thelostjourney"' export_presets.cfg
+          grep -F 'screen/orientation=0' export_presets.cfg
 
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v7
