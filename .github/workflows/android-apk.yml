@@ -83,10 +83,9 @@ jobs:
           set -euo pipefail
           APK="build/android/TheLostJourney-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/35.0.1/aapt"
-          APKANALYZER="$ANDROID_HOME/cmdline-tools/latest/bin/apkanalyzer"
           "$AAPT" dump badging "$APK" | grep -F "name='com.mygamestudio.thelostjourney'"
-          "$APKANALYZER" manifest print "$APK" > build/android/AndroidManifest.xml
-          grep -E 'screenOrientation="landscape"|screenOrientation="sensorLandscape"' build/android/AndroidManifest.xml
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml > build/android/AndroidManifest.xml
+          grep -E 'screenOrientation.*\(type 0x10\)0x(0|6)([[:space:]]|$)' build/android/AndroidManifest.xml
 
       - name: Upload installable debug APK
         uses: actions/upload-artifact@v7
