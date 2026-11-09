@@ -83,7 +83,8 @@ jobs:
           set -euo pipefail
           APK="build/android/TheLostJourney-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
-          "$AAPT" dump badging "$APK" | grep -F "name='com.mygamestudio.thelostjourney'"
+          BADGING="$("$AAPT" dump badging "$APK" 2>/dev/null || true)"
+          printf '%s\n' "$BADGING" | grep -F "name='com.mygamestudio.thelostjourney'"
           grep -F 'package/unique_name="com.mygamestudio.thelostjourney"' export_presets.cfg
           grep -F 'screen/orientation=0' export_presets.cfg
 
